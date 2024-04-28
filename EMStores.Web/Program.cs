@@ -19,12 +19,14 @@ builder.Services.AddHttpClient<IAuthService, AuthService>();
 // Set the Base coupon base url
 StaticDetails.CouponAPIBaseUrl = builder.Configuration["ServiceUrls:CouponApiUrl"] ?? string.Empty;
 StaticDetails.AuthAPIBaseUrl = builder.Configuration["ServiceUrls:AuthApiUrl"] ?? string.Empty;
+StaticDetails.ProductAPIBaseUrl = builder.Configuration["ServiceUrls:ProductApiUrl"] ?? string.Empty;
 
 // Register services
 builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // Configure cookie authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

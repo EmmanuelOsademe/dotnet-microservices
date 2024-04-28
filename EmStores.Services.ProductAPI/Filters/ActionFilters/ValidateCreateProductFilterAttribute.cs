@@ -10,7 +10,7 @@ namespace EmStores.Services.ProductAPI.Filters.ActionFilters
 		{
 			base.OnActionExecuting(context);
 
-			var productDto = context.ActionArguments["creatProductDto"] as CreateProductDto;
+			var productDto = context.ActionArguments["createProductDto"] as CreateProductDto;
 
 			if(productDto == null)
 			{
