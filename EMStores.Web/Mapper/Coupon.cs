@@ -19,7 +19,7 @@ namespace EMStores.Web.Mapper
 
 			if (query.IsDescending)
 			{
-				queryDict.Add("IsAscending", query.IsDescending.ToString());
+				queryDict.Add("IsDescending", query.IsDescending.ToString());
 			}
 
 			if (query.PageNumber.ToString() == null)
