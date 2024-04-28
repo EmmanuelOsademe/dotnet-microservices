@@ -1,7 +1,6 @@
 ﻿
-using System.ComponentModel.DataAnnotations;
 
-namespace EMStores.Web.Models
+namespace EmStores.Services.ShoppingCartAPI.Dtos
 {
 	public class ProductDto
 	{
@@ -16,8 +15,5 @@ namespace EMStores.Web.Models
 		public string Category { get; set; } = string.Empty;
 
 		public string ImageUrl { get; set; } = string.Empty;
-
-		[Range(1, 100)]
-		public int Count { get; set; } = 1;
 	}
 }
