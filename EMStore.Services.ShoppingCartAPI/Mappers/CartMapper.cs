@@ -9,14 +9,7 @@ namespace EMStore.Services.ShoppingCartAPI.Mappers
         public static CartHeader ToCartHeaderFromCartHeaderDto(this CartHeaderDto dto)
         {
             CartHeader header = new();
-            //return new CartHeader
-            //{
-            //    CartHeaderId = dto.CartHeaderId,
-            //    UserId = dto.UserId,
-            //    CouponCode = dto.CouponCode,
-            //    Discount = dto.Discount,
-            //    CartTotal = dto.CartTotal
-            //};
+
             if(dto != null)
             {
                 header.UserId = dto.UserId;
@@ -35,8 +28,6 @@ namespace EMStore.Services.ShoppingCartAPI.Mappers
                 CartHeaderId = header.CartHeaderId,
                 UserId = header.UserId,
                 CouponCode = header.CouponCode,
-                Discount = header.Discount,
-                CartTotal = header.CartTotal
             };
         }
 
@@ -46,9 +37,7 @@ namespace EMStore.Services.ShoppingCartAPI.Mappers
             {
                 CartDetailsId = dto.CartDetailsId,
                 CartHeaderId = dto.CartHeaderId,
-                CartHeader = dto.CartHeader.ToCartHeaderFromCartHeaderDto(),
                 ProductId = dto.ProductId,
-                Product = dto.Product,
                 Count = dto.Count
             };
         }
@@ -59,7 +48,6 @@ namespace EMStore.Services.ShoppingCartAPI.Mappers
             {
                 CartDetailsId = details.CartDetailsId,
                 CartHeaderId = details.CartHeaderId,
-                CartHeader = details.CartHeader.ToDtoFromCartHeader(),
                 ProductId = details.ProductId,
                 Product = details.Product,
                 Count = details.Count

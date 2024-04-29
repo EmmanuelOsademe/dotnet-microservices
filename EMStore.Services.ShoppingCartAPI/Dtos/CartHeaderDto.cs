@@ -12,10 +12,10 @@ namespace EMStore.Services.ShoppingCartAPI.Dtos
 
         public string CouponCode { get; set; } = string.Empty;
 
-        [Required]
+
         public double Discount { get; set; }
 
-        [Required]
+ 
         public double CartTotal { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories
             CartDto cartDto = cartInputDto.ToCartDtoFromCartInputDto();
             
             
-            var cartHeaderFromDB = await _dbContext.CartHeaders.FirstOrDefaultAsync(c => c.UserId == cartDto.CartHeader.UserId);
+            var cartHeaderFromDB = await _dbContext.CartHeaders.AsNoTracking().FirstOrDefaultAsync(c => c.UserId == cartDto.CartHeader.UserId);
             if(cartHeaderFromDB == null)
             {
                 // Create cart header and details for the user
@@ -26,32 +26,35 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories
                 await _dbContext.SaveChangesAsync();
 
                 // Create CartDetails
-                cartDto.CartDetails.First().CartHeaderId = cartHeader.CartHeaderId;
-                CartDetails cartDetails = cartDto.CartDetails.First().ToCartDetailsFromCartDetailsDto();
+                CartDetailsDto cartDetailsDto = cartDto.CartDetails.First();
+                cartDetailsDto.CartHeaderId = cartHeader.CartHeaderId;
+                CartDetails cartDetails = cartDetailsDto.ToCartDetailsFromCartDetailsDto();
                 _dbContext.CartDetails.Add(cartDetails);
                 await _dbContext.SaveChangesAsync();
             }
             else
             {
                 // Check if the cart details for the existing user has the same product
-                var cartDetailsFromDb = await _dbContext.CartDetails.FirstOrDefaultAsync(
+                var cartDetailsFromDb = await _dbContext.CartDetails.AsNoTracking().FirstOrDefaultAsync(
                     c => c.ProductId == cartDto.CartDetails.First().ProductId && c.CartHeaderId == cartHeaderFromDB.CartHeaderId);
 
                 if(cartDetailsFromDb == null)
                 {
                     // Create a new entry for cart details
-                    cartDto.CartDetails.First().CartHeaderId = cartHeaderFromDB.CartHeaderId;
-                    CartDetails cartDetails = cartDto.CartDetails.First().ToCartDetailsFromCartDetailsDto();
+                    CartDetailsDto cartDetailsDto = cartDto.CartDetails.First();
+                    cartDetailsDto.CartHeaderId = cartHeaderFromDB.CartHeaderId;
+                    CartDetails cartDetails = cartDetailsDto.ToCartDetailsFromCartDetailsDto();
                     _dbContext.CartDetails.Add(cartDetails);
                     await _dbContext.SaveChangesAsync();
                 }
                 else
                 {
                     // Update count in the details
-                    cartDto.CartDetails.First().Count += cartDetailsFromDb.Count;
-                    cartDto.CartDetails.First().CartHeaderId = cartDetailsFromDb.CartHeaderId;
-                    cartDto.CartDetails.First().CartDetailsId = cartDetailsFromDb.CartHeaderId;
-                    CartDetails cartDetails = cartDto.CartDetails.First().ToCartDetailsFromCartDetailsDto();
+                    CartDetailsDto cartDetailsDto = cartDto.CartDetails.First();
+                    cartDetailsDto.Count += cartDetailsFromDb.Count;
+                    cartDetailsDto.CartHeaderId = cartDetailsFromDb.CartHeaderId;
+                    cartDetailsDto.CartDetailsId = cartDetailsFromDb.CartDetailsId;
+                    CartDetails cartDetails = cartDetailsDto.ToCartDetailsFromCartDetailsDto();
                     _dbContext.CartDetails.Update(cartDetails);
                     await _dbContext.SaveChangesAsync();
                 }
@@ -59,6 +62,56 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories
 
             return cartDto;
 
+        }
+
+        public async Task<bool> RemoveCartAsync(RemoveCartDto removeCartDto)
+        {
+            // Check that the user has exisiting cart
+            var cartHeaderFromDB = await _dbContext.CartHeaders.AsNoTracking().FirstOrDefaultAsync(c => c.UserId == removeCartDto.UserId);
+            if (cartHeaderFromDB == null) return false;
+
+            // Check that the cartDetails exists and that it belongs to the current user
+            var cartDetailsFromDb = await _dbContext.CartDetails.AsNoTracking().FirstOrDefaultAsync(
+                    c => c.CartDetailsId == removeCartDto.CartDetailsId && c.CartHeaderId == cartHeaderFromDB.CartHeaderId);
+            if (cartDetailsFromDb == null) return false;
+
+            // Count the number of items in the cart
+            int totalCountOfCartItems = _dbContext.CartDetails.Where(c => c.CartHeaderId == cartHeaderFromDB.CartHeaderId).Count();
+
+            // Remove the cart details
+            _dbContext.CartDetails.Remove(cartDetailsFromDb);
+            if (totalCountOfCartItems == 1)
+            {
+                // If the item is the last in the cart items, then remove the header as well
+                var cartHeaderToRemove = await _dbContext.CartHeaders.FirstOrDefaultAsync(c => c.CartHeaderId == cartHeaderFromDB.CartHeaderId);
+                _dbContext.CartHeaders.Remove(cartHeaderToRemove);
+            }
+            await _dbContext.SaveChangesAsync();
+
+
+            return true;
+        }
+
+        public async Task<CartDto?> GetCartByUserIdAsync(string userId)
+        {
+            var cartHeader = await _dbContext.CartHeaders.AsNoTracking().FirstOrDefaultAsync(c => c.UserId == userId);
+            if (cartHeader == null) return null;
+            CartHeaderDto cartHeaderDto = cartHeader.ToDtoFromCartHeader();
+
+            var cartDetails = await _dbContext.CartDetails.Where(c => c.CartHeaderId == cartHeader.CartHeaderId).ToListAsync();
+
+            var cartDetailsDto = cartDetails.Select(c => c.ToDtoFromCartDetails());
+
+            foreach(var item in cartDetailsDto)
+            {
+                cartHeaderDto.CartTotal += (item.Count * item.Product.Price);
+            }
+
+            return new CartDto
+            {
+                CartDetails = cartDetailsDto,
+                CartHeader = cartHeaderDto
+            };
         }
     }
 }
