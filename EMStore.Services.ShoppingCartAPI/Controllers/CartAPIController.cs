@@ -29,5 +29,46 @@ namespace EMStore.Services.ShoppingCartAPI.Controllers
                 return BadRequest(response);
             }
         }
+
+        [HttpPost("RemoveCart")]
+        public async Task<IActionResult> RemoveCart([FromBody] RemoveCartDto removeCartDto)
+        {
+            try
+            {
+                var result = await _cartRespository.RemoveCartAsync(removeCartDto);
+                response.Result = result;
+                if (!result)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Failed to removed cart";
+                    return Ok(response);
+                }
+                response.Message = "Cart removed successfully";
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message.ToString() ?? "Error removing cart";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
+
+        [HttpGet("GetCart/{userId}")]
+        public async Task<IActionResult> GetCart([FromRoute] string userId)
+        {
+            try
+            {
+                var result = await _cartRespository.GetCartByUserIdAsync(userId);
+                response.Result = result;                
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message.ToString() ?? "Error removing cart";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
     }
 }
