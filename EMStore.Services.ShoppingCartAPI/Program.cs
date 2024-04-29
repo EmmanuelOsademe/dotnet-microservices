@@ -1,5 +1,7 @@
 using EMStore.Services.ShoppingCartAPI.Data;
 using EMStore.Services.ShoppingCartAPI.Extensions;
+using EMStore.Services.ShoppingCartAPI.Repositories;
+using EMStore.Services.ShoppingCartAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -44,6 +46,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.AddAppAuthentication();
 
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 var app = builder.Build();
 
