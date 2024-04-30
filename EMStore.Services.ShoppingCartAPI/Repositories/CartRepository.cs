@@ -3,14 +3,16 @@ using EMStore.Services.ShoppingCartAPI.Dtos;
 using EMStore.Services.ShoppingCartAPI.Mappers;
 using EMStore.Services.ShoppingCartAPI.Models;
 using EMStore.Services.ShoppingCartAPI.Repositories.Interfaces;
+using EMStore.Services.ShoppingCartAPI.Services.IServices;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.PortableExecutable;
 
 namespace EMStore.Services.ShoppingCartAPI.Repositories
 {
-    public class CartRepository(ApplicationDbContext dbContext) : ICartRepository
+    public class CartRepository(ApplicationDbContext dbContext, IProductService productService, ICouponService couponService) : ICartRepository
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
+        private readonly IProductService _productService = productService;
+        private readonly ICouponService _couponService = couponService;
         public async Task<CartDto> UpsertCartAsync(CartInputDto cartInputDto)
         {
             // Convert the input DTO to CartDto
@@ -102,16 +104,66 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories
 
             var cartDetailsDto = cartDetails.Select(c => c.ToDtoFromCartDetails());
 
+            var products = await _productService.GetProducts();
+
+            List<CartDetailsDto> resDetailsDto = [];
+            
+
             foreach(var item in cartDetailsDto)
             {
-                cartHeaderDto.CartTotal += (item.Count * item.Product.Price);
+                item.CartHeader = cartHeaderDto;
+                var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+                if (product == null) continue;
+                item.Product = product;
+                cartHeaderDto.CartTotal += (item.Count * product.Price );
+                resDetailsDto.Add(item);
+            }
+
+            if (!string.IsNullOrEmpty(cartHeader.CouponCode))
+            {
+                CouponDto coupon = await _couponService.GetCouponAsync(cartHeader.CouponCode);
+                if(coupon != null && cartHeaderDto.CartTotal >= coupon.MinAmount)
+                {
+                    cartHeaderDto.CartTotal -= coupon.DiscountAmount;
+                    cartHeaderDto.Discount = coupon.DiscountAmount;
+                }
             }
 
             return new CartDto
             {
-                CartDetails = cartDetailsDto,
+                CartDetails = resDetailsDto,
                 CartHeader = cartHeaderDto
             };
+        }
+
+        public async Task<bool> ApplyCouponAsync(CartInputDto dto)
+        {
+            var cartFromDb = await _dbContext.CartHeaders.FirstOrDefaultAsync(c => c.UserId == dto.CartHeaderInputDto.UserId);
+            if (cartFromDb == null)
+            {
+                return false;
+            }
+
+            cartFromDb.CouponCode = dto.CartHeaderInputDto.CouponCode;
+
+            _dbContext.CartHeaders.Update(cartFromDb);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> RemoveCouponAsync(CartInputDto dto)
+        {
+            var cartFromDb = await _dbContext.CartHeaders.FirstOrDefaultAsync(c => c.UserId == dto.CartHeaderInputDto.UserId);
+            if (cartFromDb == null)
+            {
+                return false;
+            }
+
+            cartFromDb.CouponCode = "";
+            _dbContext.CartHeaders.Update(cartFromDb);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

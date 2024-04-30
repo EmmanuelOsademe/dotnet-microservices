@@ -54,6 +54,54 @@ namespace EMStore.Services.ShoppingCartAPI.Controllers
             }
         }
 
+        [HttpPost("ApplyCoupon")]
+        public async Task<IActionResult> ApplyCoupon([FromBody] CartInputDto dto)
+        {
+            try
+            {
+                var result = await _cartRespository.ApplyCouponAsync(dto);
+                response.Result = result;
+                if (!result)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Failed to apply coupon";
+                    return Ok(response);
+                }
+                response.Message = "Coupon applied successfully";
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message.ToString() ?? "Error removing cart";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost("RemoveCoupon")]
+        public async Task<IActionResult> RemoveCoupon([FromBody] CartInputDto dto)
+        {
+            try
+            {
+                var result = await _cartRespository.RemoveCouponAsync(dto);
+                response.Result = result;
+                if (!result)
+                {
+                    response.IsSuccess = false;
+                    response.Message = "Failed to remove coupon";
+                    return Ok(response);
+                }
+                response.Message = "Coupon removed successfully";
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message.ToString() ?? "Error removing cart";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
+
         [HttpGet("GetCart/{userId}")]
         public async Task<IActionResult> GetCart([FromRoute] string userId)
         {
