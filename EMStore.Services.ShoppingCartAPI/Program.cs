@@ -2,6 +2,8 @@ using EMStore.Services.ShoppingCartAPI.Data;
 using EMStore.Services.ShoppingCartAPI.Extensions;
 using EMStore.Services.ShoppingCartAPI.Repositories;
 using EMStore.Services.ShoppingCartAPI.Repositories.Interfaces;
+using EMStore.Services.ShoppingCartAPI.Services;
+using EMStore.Services.ShoppingCartAPI.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -13,6 +15,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(
+    builder.Configuration["ServiceUrls:ProductAPI"] ?? string.Empty
+    ));
+builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(
+    builder.Configuration["ServiceUrls:CouponAPI"] ?? string.Empty
+    ));
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

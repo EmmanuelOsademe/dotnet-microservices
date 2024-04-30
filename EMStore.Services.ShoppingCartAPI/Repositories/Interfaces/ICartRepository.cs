@@ -9,5 +9,9 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories.Interfaces
         Task<bool> RemoveCartAsync(RemoveCartDto removeCartDto);
 
         Task<CartDto?> GetCartByUserIdAsync(string userId);
+
+        Task<bool> ApplyCouponAsync(CartInputDto dto);
+
+        Task<bool> RemoveCouponAsync(CartInputDto dto);
     }
 }

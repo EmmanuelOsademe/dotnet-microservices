@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EMStore.Services.CouponAPI.Controllers
 {
 	[Route("api/coupons")]
-	[ApiController]
-	[Authorize]
+    [ApiController]
 	public class CouponAPIController(ICouponRepository couponRepo) : ControllerBase
 	{
 
