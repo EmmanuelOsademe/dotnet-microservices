@@ -10,6 +10,7 @@ namespace EMStore.Services.CouponAPI.Controllers
 {
 	[Route("api/coupons")]
     [ApiController]
+	[Authorize]
 	public class CouponAPIController(ICouponRepository couponRepo) : ControllerBase
 	{
 
