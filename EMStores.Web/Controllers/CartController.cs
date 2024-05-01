@@ -55,6 +55,24 @@ namespace EMStores.Web.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> EmailCart(CartDto cartDto)
+        {
+            CartDto cart = await LoadCartBasedOnLoggedInUser();
+            var email = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Email)?.FirstOrDefault()?.Value ?? string.Empty;
+            cart.CartHeader.Email = email;
+            
+            ResponseDto? response = await _cartService.EmailCartAsync(cart);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["success"] = "Email will be processed and sent shortly";
+                return RedirectToAction(nameof(CartIndex));
+            }
+            TempData["error"] = "Error sending message";
+            return RedirectToAction(nameof(CartIndex));
+        }
+
+
+        [HttpPost]
         public async Task<IActionResult> RemoveCoupon(CartDto cartDto)
         {
             var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value ?? string.Empty;

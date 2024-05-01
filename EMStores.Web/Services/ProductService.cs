@@ -15,7 +15,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.POST,
-				ApiUrl = StaticDetails.ProductAPIBaseUrl + "/api/products",
+				ApiUrl = StaticDetails.ProductAPIBaseUrl + "/api/product",
 				Data = createProductDto
 			};
 
@@ -27,7 +27,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.DELETE,
-				ApiUrl = StaticDetails.ProductAPIBaseUrl + $"/api/products/{id}"
+				ApiUrl = StaticDetails.ProductAPIBaseUrl + $"/api/product/{id}"
 			};
 
 			return await _baseService.SendAsync(requestDto);
@@ -38,7 +38,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.GET,
-				ApiUrl = StaticDetails.ProductAPIBaseUrl + $"/api/products/{id}"
+				ApiUrl = StaticDetails.ProductAPIBaseUrl + $"/api/product/{id}"
 			};
 
 			return await _baseService.SendAsync(requestDto);
@@ -49,7 +49,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.GET,
-				ApiUrl = StaticDetails.ProductAPIBaseUrl + "/api/products",
+				ApiUrl = StaticDetails.ProductAPIBaseUrl + "/api/product",
 				Query = query.ConvertQueryToDictionary()
 			};
 
@@ -61,7 +61,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.PUT,
-				ApiUrl = StaticDetails.ProductAPIBaseUrl + $"/api/products/{id}",
+				ApiUrl = StaticDetails.ProductAPIBaseUrl + $"/api/product/{id}",
 				Data = updateProductDto
 			};
 

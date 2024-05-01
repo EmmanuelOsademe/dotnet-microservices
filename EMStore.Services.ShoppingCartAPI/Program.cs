@@ -5,6 +5,7 @@ using EMStore.Services.ShoppingCartAPI.Repositories.Interfaces;
 using EMStore.Services.ShoppingCartAPI.Services;
 using EMStore.Services.ShoppingCartAPI.Services.IServices;
 using EMStore.Services.ShoppingCartAPI.Utility;
+using EMStores.MessageBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -21,6 +22,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<BackendAPIAuthenticationHttpClientHandler>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(
     builder.Configuration["ServiceUrls:ProductAPI"] ?? string.Empty

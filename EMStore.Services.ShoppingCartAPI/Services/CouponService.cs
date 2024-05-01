@@ -10,7 +10,7 @@ namespace EMStore.Services.ShoppingCartAPI.Services
         public async Task<CouponDto> GetCouponAsync(string couponCode)
         {
             var client = _httpClientFactory.CreateClient("Coupon");
-            var response = await client.GetAsync($"/api/coupons/GetByCode/{couponCode}");
+            var response = await client.GetAsync($"/api/coupon/GetByCode/{couponCode}");
             var apiContent = await response.Content.ReadAsStringAsync();
             var resp = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
             if (resp != null && resp.IsSuccess)

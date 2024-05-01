@@ -15,7 +15,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.POST,
-				ApiUrl = StaticDetails.CouponAPIBaseUrl+"/api/coupons",
+				ApiUrl = StaticDetails.CouponAPIBaseUrl+"/api/coupon",
 				Data = couponDto
 			};
 
@@ -27,7 +27,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.DELETE,
-				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupons/{id}"
+				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupon/{id}"
 			};
 
 			return await _baseService.SendAsync(requestDto);
@@ -38,7 +38,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.GET,
-				ApiUrl = StaticDetails.CouponAPIBaseUrl + "/api/coupons",
+				ApiUrl = StaticDetails.CouponAPIBaseUrl + "/api/coupon",
 				Query = query.ConvertQueryObjectToDictionary()
 			};
 
@@ -50,7 +50,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.GET,
-				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupons/GetByCode/{couponCode}"
+				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupon/GetByCode/{couponCode}"
 			};
 
 			return await _baseService.SendAsync(requestDto);
@@ -61,7 +61,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.GET,
-				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupons/{id}"
+				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupon/{id}"
 			};
 
 			return await _baseService.SendAsync(requestDto);
@@ -72,7 +72,7 @@ namespace EMStores.Web.Services
 			RequestDto requestDto = new()
 			{
 				ApiType = StaticDetails.ApiType.PUT,
-				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupons/{id}",
+				ApiUrl = StaticDetails.CouponAPIBaseUrl + $"/api/coupon/{id}",
 				Data = updateCouponDto
 			};
 

@@ -13,5 +13,7 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories.Interfaces
         Task<bool> ApplyCouponAsync(CartInputDto dto);
 
         Task<bool> RemoveCouponAsync(CartInputDto dto);
+
+        Task EmailCartAsync(CartDto cartDto);
     }
 }
