@@ -66,10 +66,10 @@ namespace EMStores.Web.Controllers
             ResponseDto? response = await _cartService.RemoveCouponAsync(inputDto);
             if (response != null && response.IsSuccess)
             {
-                TempData["success"] = "Coupon code applied successfully";
+                TempData["success"] = "Coupon code removed successfully";
                 return RedirectToAction(nameof(CartIndex));
             }
-            TempData["error"] = "Error applying coupon code";
+            TempData["error"] = "Error removing coupon code";
             return View();
         }
 
