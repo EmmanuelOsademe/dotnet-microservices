@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EMStore.Services.ShoppingCartAPI.Controllers
 {
-    [Route("api/carts")]
+    [Route("api/cart")]
     [ApiController]
     public class CartAPIController(ICartRepository cartRepository) : ControllerBase
     {
@@ -114,6 +114,22 @@ namespace EMStore.Services.ShoppingCartAPI.Controllers
             catch (Exception ex)
             {
                 response.Message = ex.Message.ToString() ?? "Error removing cart";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
+
+        [HttpPost("EmailCartRequest")]
+        public async Task<IActionResult> EmailCartRequest([FromRoute] CartDto cartDto)
+        {
+            try
+            {
+                await _cartRespository.EmailCartAsync(cartDto);
+                response.Result = true;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
                 response.IsSuccess = false;
                 return BadRequest(response);
             }

@@ -4,15 +4,18 @@ using EMStore.Services.ShoppingCartAPI.Mappers;
 using EMStore.Services.ShoppingCartAPI.Models;
 using EMStore.Services.ShoppingCartAPI.Repositories.Interfaces;
 using EMStore.Services.ShoppingCartAPI.Services.IServices;
+using EMStores.MessageBus;
 using Microsoft.EntityFrameworkCore;
 
 namespace EMStore.Services.ShoppingCartAPI.Repositories
 {
-    public class CartRepository(ApplicationDbContext dbContext, IProductService productService, ICouponService couponService) : ICartRepository
+    public class CartRepository(ApplicationDbContext dbContext, IProductService productService, ICouponService couponService, IMessageBus messageBus, IConfiguration config) : ICartRepository
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly IProductService _productService = productService;
         private readonly ICouponService _couponService = couponService;
+        private readonly IMessageBus _messageBus = messageBus;
+        private readonly IConfiguration _config = config;
         public async Task<CartDto> UpsertCartAsync(CartInputDto cartInputDto)
         {
             // Convert the input DTO to CartDto
@@ -164,6 +167,12 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories
             _dbContext.CartHeaders.Update(cartFromDb);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task EmailCartAsync(CartDto cartDto)
+        {
+            string topicQueueName = _config.GetValue<string>("TopicAndQueueNames:EmailShoppingCart") ?? string.Empty;
+            await _messageBus.PublishMessage(cartDto, topicQueueName);
         }
     }
 }

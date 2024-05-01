@@ -1,4 +1,5 @@
-﻿using EMStores.Web.Models.Dtos;
+﻿using EMStores.Web.Models;
+using EMStores.Web.Models.Dtos;
 using EMStores.Web.Models.Dtos.Cart;
 
 namespace EMStores.Web.Services.IServices
@@ -10,5 +11,7 @@ namespace EMStores.Web.Services.IServices
         Task<ResponseDto?> RemoveFromCartAsync (RemoveCartDto inputDto);
         Task<ResponseDto?> ApplyCouponAsync(CartInputDto inputDto);
         Task<ResponseDto?> RemoveCouponAsync(CartInputDto inputDto);
+
+        Task<ResponseDto?> EmailCartAsync(CartDto cartDto);
     }
 }

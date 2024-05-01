@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmStores.Services.ProductAPI.Controllers
 {
-	[Route("api/products")]
+	[Route("api/product")]
 	[ApiController]
 	public class ProductAPIController(IProductRepository productRepository) : ControllerBase
 	{
