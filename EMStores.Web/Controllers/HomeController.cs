@@ -1,18 +1,21 @@
 using EMStores.Services.ProductAPI.Helpers;
 using EMStores.Web.Models;
 using EMStores.Web.Models.Dtos;
+using EMStores.Web.Models.Dtos.Cart;
 using EMStores.Web.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace EMStores.Web.Controllers
 {
-	public class HomeController(IProductService productService) : Controller
+	public class HomeController(IProductService productService, ICartService cartService) : Controller
 	{
 
 		private readonly IProductService _productService = productService;
+        private readonly ICartService _cartService = cartService;
 
 
 		public async Task<IActionResult> Index()
@@ -46,6 +49,31 @@ namespace EMStores.Web.Controllers
             else
             {
                 return NotFound();
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ActionName("ProductDetails")]
+        public async Task<IActionResult> ProductDetails(ProductDto productDto)
+        {
+            var userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value ?? string.Empty;
+            CartHeaderInputDto header = new() { UserId = userId};
+            CartDetailsInputDto details = new() { ProductId = productDto.ProductId, Count = productDto.Count }; 
+
+            CartInputDto inputDto = new() { CartHeaderInputDto = header, CartDetailsInputDto = details };
+
+            ResponseDto? response = await _cartService.UpsertCartAsync(inputDto);
+            if (response != null && response.IsSuccess)
+            {
+                TempData["success"] = "Item has be added to Shopping Cart";
+                return RedirectToAction(nameof(Index));
+
+            }
+            else
+            {
+                TempData["error"] = "Error adding item to Shopping Cart";
+                return View(productDto);
             }
         }
 
