@@ -1,0 +1,6 @@
+@EMStores.Service.EmailAPI_HostAddress = http://localhost:5032
+
+GET {{EMStores.Service.EmailAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
