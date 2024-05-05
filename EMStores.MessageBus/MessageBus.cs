@@ -11,8 +11,7 @@ namespace EMStores.MessageBus
 {
     public class MessageBus : IMessageBus
     {
-        private string connectionString = "";
-        public async Task PublishMessage(object message, string topic_queue_Name)
+        public async Task PublishMessage(object message, string topic_queue_Name, string connectionString)
         {
             await using var client = new ServiceBusClient(connectionString);
 
