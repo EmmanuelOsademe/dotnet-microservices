@@ -120,7 +120,7 @@ namespace EMStore.Services.ShoppingCartAPI.Controllers
         }
 
         [HttpPost("EmailCartRequest")]
-        public async Task<IActionResult> EmailCartRequest([FromRoute] CartDto cartDto)
+        public async Task<IActionResult> EmailCartRequest([FromBody] CartDto cartDto)
         {
             try
             {

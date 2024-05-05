@@ -1,6 +1,8 @@
 using EMStore.Services.EmailAPI.Data;
 using EMStore.Services.EmailAPI.Extensions;
 using EMStore.Services.EmailAPI.Messaging;
+using EMStore.Services.EmailAPI.Repositories;
+using EMStore.Services.EmailAPI.Repositories.Interfaces;
 using EMStore.Services.EmailAPI.Services;
 using Microsoft.EntityFrameworkCore;
 

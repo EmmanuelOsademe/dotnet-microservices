@@ -1,6 +1,7 @@
 ﻿using EMStore.Services.EmailAPI.Data;
 using EMStore.Services.EmailAPI.Dtos.Cart;
 using EMStore.Services.EmailAPI.Models;
+using EMStore.Services.EmailAPI.Repositories.Interfaces;
 using EMStore.Services.EmailAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -9,7 +10,7 @@ namespace EMStore.Services.EmailAPI.Services
 {
     public class EmailService (DbContextOptions<ApplicationDbContext> dbOptions) : IEmailService
     {
-        private DbContextOptions<ApplicationDbContext> _dbOptions = dbOptions;
+        private readonly DbContextOptions<ApplicationDbContext> _dbOptions = dbOptions;
 
         public async Task EmailCartAndLog(CartDto cartDto)
         {
@@ -28,7 +29,7 @@ namespace EMStore.Services.EmailAPI.Services
             message.Append("</ul>");
 
             await LogAndEmailAsync(message.ToString(), cartDto.CartHeader.Email);
-            
+
         }
 
         private async Task<bool> LogAndEmailAsync(string message, string email)
