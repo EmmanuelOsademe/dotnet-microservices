@@ -8,9 +8,10 @@ using System.Text;
 
 namespace EMStore.Services.EmailAPI.Services
 {
-    public class EmailService (DbContextOptions<ApplicationDbContext> dbOptions) : IEmailService
+    public class EmailService (IEmailRepository emailRepository) : IEmailService
     {
-        private readonly DbContextOptions<ApplicationDbContext> _dbOptions = dbOptions;
+        //private readonly DbContextOptions<ApplicationDbContext> _dbOptions = dbOptions;
+        private readonly IEmailRepository _emailRepository = emailRepository;
 
         public async Task EmailCartAndLog(CartDto cartDto)
         {
@@ -28,30 +29,30 @@ namespace EMStore.Services.EmailAPI.Services
             }
             message.Append("</ul>");
 
-            await LogAndEmailAsync(message.ToString(), cartDto.CartHeader.Email);
-
+            //await LogAndEmailAsync(message.ToString(), cartDto.CartHeader.Email);
+            await _emailRepository.LogAndEmailAsync(message.ToString(), cartDto.CartHeader.Email);
         }
 
-        private async Task<bool> LogAndEmailAsync(string message, string email)
-        {
-            try
-            {
-                EmailLogger emailLog = new()
-                {
-                    Email = email,
-                    EmailSent = DateTime.Now,
-                    Message = message
-                };
+        //private async Task<bool> LogAndEmailAsync(string message, string email)
+        //{
+        //    try
+        //    {
+        //        EmailLogger emailLog = new()
+        //        {
+        //            Email = email,
+        //            EmailSent = DateTime.Now,
+        //            Message = message
+        //        };
 
-                await using var _applicationDb = new ApplicationDbContext(_dbOptions);
-                await _applicationDb.EmailLoggers.AddAsync(emailLog);
-                await _applicationDb.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        //        await using var _applicationDb = new ApplicationDbContext(_dbOptions);
+        //        await _applicationDb.EmailLoggers.AddAsync(emailLog);
+        //        await _applicationDb.SaveChangesAsync();
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
     }
 }
