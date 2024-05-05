@@ -8,6 +8,6 @@ namespace EMStores.MessageBus
 {
     public interface IMessageBus
     {
-        Task PublishMessage(object message, string topic_queue_Name);
+        Task PublishMessage(object message, string topic_queue_Name, string connectionString);
     }
 }

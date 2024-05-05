@@ -171,8 +171,9 @@ namespace EMStore.Services.ShoppingCartAPI.Repositories
 
         public async Task EmailCartAsync(CartDto cartDto)
         {
+            string serviceBusConnectionString = _config.GetValue<string>("ServiceBusConnectionString") ?? string.Empty;
             string topicQueueName = _config.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue") ?? string.Empty;
-            await _messageBus.PublishMessage(cartDto, topicQueueName);
+            await _messageBus.PublishMessage(cartDto, topicQueueName, serviceBusConnectionString);
         }
     }
 }
