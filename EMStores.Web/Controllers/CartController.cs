@@ -20,6 +20,13 @@ namespace EMStores.Web.Controllers
             return View(cart);
         }
 
+        [Authorize]
+        public async Task<IActionResult> Checkout()
+        {
+            CartDto cart = await LoadCartBasedOnLoggedInUser();
+            return View(cart);
+        }
+
 
         public async Task<IActionResult> RemoveCartItem(int cartDetailsId)
         {

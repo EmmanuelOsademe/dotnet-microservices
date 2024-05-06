@@ -6,8 +6,6 @@ using EMStore.Services.EmailAPI.Repositories;
 using EMStore.Services.EmailAPI.Repositories.Interfaces;
 using EMStore.Services.EmailAPI.Services.Interfaces;
 using EMStore.Services.EmailAPI.Settings;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -36,11 +34,11 @@ namespace EMStore.Services.EmailAPI.Services
             }
             message.Append("</ul>");
 
-            // Send the email
-            await SendMailAsync(cartDto.CartHeader.Email, "Cart Email", message.ToString());
-
             // Log the email to the database
             await _emailRepository.LogAndEmailAsync(message.ToString(), cartDto.CartHeader.Email);
+
+            // Send the email
+            await SendMailAsync(cartDto.CartHeader.Email, "Cart Email", message.ToString());
         }
 
         public async Task EmailUserRegistrationAndLog(UserDTO userDto)
@@ -53,9 +51,9 @@ namespace EMStore.Services.EmailAPI.Services
             message.AppendLine($"<br />Email: {userDto.Email}");
             message.AppendLine($"<br />Phone number: {userDto.PhoneNumber}");
 
-            await SendMailAsync("emma.osademe@gmail.com", "New User Registration", message.ToString());
-
             await _emailRepository.LogAndEmailAsync(message.ToString(), "emma.osademe@gmail.com");
+
+            await SendMailAsync("emma.osademe@gmail.com", "New User Registration", message.ToString());
         }
 
         private async Task SendMailAsync (string to, string subject, string body)
