@@ -3,17 +3,20 @@ using EMStore.Services.AuthAPI.DTOs;
 using EMStore.Services.AuthAPI.Mappers;
 using EMStore.Services.AuthAPI.Models;
 using EMStore.Services.AuthAPI.Services.IServices;
+using EMStores.MessageBus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace EMStore.Services.AuthAPI.Services
 {
-    public class AuthService(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator) : IAuthService
+    public class AuthService(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtTokenGenerator jwtTokenGenerator, IMessageBus messageBus, IConfiguration config) : IAuthService
     {
         private readonly ApplicationDbContext _dbContext = dbContext;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
         private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
+        private readonly IMessageBus _messageBus = messageBus;
+        private readonly IConfiguration _config = config;
 
         public async Task<bool> AssignRole(string email, string roleName)
         {
@@ -91,6 +94,7 @@ namespace EMStore.Services.AuthAPI.Services
                     if (returnedUser != null)
                     {
                         UserDTO userDto = returnedUser.FromAppUserToUserDTO();
+                        await EmailUserRegistrationAsync(userDto);
                         return "";
                     }
                     else
@@ -108,7 +112,14 @@ namespace EMStore.Services.AuthAPI.Services
             {
                 return ex.Message;
             }
-            return "Error encountered";
+        }
+
+        private async Task EmailUserRegistrationAsync(UserDTO userDto)
+        {
+            string serviceBusConnectionString = _config.GetValue<string>("ServiceBusConnectionString") ?? string.Empty;
+            string topicQueueName = _config.GetValue<string>("TopicAndQueueNames:EmailUserRegistrationQueue") ?? string.Empty;
+            await _messageBus.PublishMessage(userDto, topicQueueName, serviceBusConnectionString);
+
         }
     }
 }
