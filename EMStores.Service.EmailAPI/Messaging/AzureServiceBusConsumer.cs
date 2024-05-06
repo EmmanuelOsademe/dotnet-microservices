@@ -16,7 +16,6 @@ namespace EMStore.Services.EmailAPI.Messaging
         private readonly string emailCartQueue;
         private ServiceBusProcessor _emailCartProcessor;
 
-        private readonly string userRegistrationConnectionString;
         private readonly string userRegistrationQueue;
         private ServiceBusProcessor _emailUserRegistrationProcessor;
         private readonly IEmailService _emailService;
@@ -25,19 +24,17 @@ namespace EMStore.Services.EmailAPI.Messaging
         {
             _config = config;
 
-            // Email shopping cart
+            // Create the client
             serviceBusConnectionString = _config.GetValue<string>("ServiceBusConnectionString") ?? string.Empty;
-            emailCartQueue = _config.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue") ?? string.Empty;
-
             var client = new ServiceBusClient(serviceBusConnectionString);
-            // Processor is used to listen to queues or topics
+
+            // Create the emailCartProcessor
+            emailCartQueue = _config.GetValue<string>("TopicAndQueueNames:EmailShoppingCartQueue") ?? string.Empty;
             _emailCartProcessor = client.CreateProcessor(emailCartQueue);
 
-            // Email User registration
-            userRegistrationConnectionString = _config.GetValue<string>("UserRegistrationServiceBusConnectionString") ?? string.Empty;
+            // Create the user registration processor
             userRegistrationQueue = _config.GetValue<string>("TopicAndQueueNames:EmailUserRegistrationQueue") ?? string.Empty;
-            var userRegistrationClient = new ServiceBusClient(userRegistrationConnectionString);
-            _emailUserRegistrationProcessor = userRegistrationClient.CreateProcessor(userRegistrationQueue);
+            _emailUserRegistrationProcessor = client.CreateProcessor(userRegistrationQueue);
 
             _emailService = emailService;
 
