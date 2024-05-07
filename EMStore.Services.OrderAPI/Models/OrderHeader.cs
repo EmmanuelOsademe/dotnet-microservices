@@ -1,4 +1,6 @@
 ﻿
+using EMStore.Services.OrderAPI.Dtos;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.ComponentModel.DataAnnotations;
 
 namespace EMStore.Services.OrderAPI.Models
@@ -30,6 +32,11 @@ namespace EMStore.Services.OrderAPI.Models
 
         public string StripeSessionId { get; set; } = string.Empty;
 
-        public IEnumerable<OrderDetails> OrderDetails { get; set; }
+        public IEnumerable<OrderDetailsDto> OrderDetails { get; set; } = [];
+
+        public static implicit operator OrderHeader(EntityEntry<OrderHeader> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

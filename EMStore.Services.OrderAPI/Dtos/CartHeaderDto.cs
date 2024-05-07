@@ -22,7 +22,7 @@ namespace EMStore.Services.OrderAPI.Dtos
         public string Phone { get; set;} = string.Empty;
         public string Email { get; set; } = string.Empty;
 
-        public IEnumerable<OrderDetails> OrderDetails { get; set; }
+        public IEnumerable<CartDetailsDto> CartDetails { get; set; }
 
     }
 }
