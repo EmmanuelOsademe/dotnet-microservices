@@ -9,9 +9,10 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace EMStores.Web.Controllers
 {
-    public class CartController (ICartService cartService) : Controller
+    public class CartController (ICartService cartService, IOrderService orderService) : Controller
     {
         private readonly ICartService _cartService = cartService;
+        private readonly IOrderService _orderService = orderService;
 
         [Authorize]
         public async Task <IActionResult> CartIndex()
@@ -24,6 +25,31 @@ namespace EMStores.Web.Controllers
         public async Task<IActionResult> Checkout()
         {
             CartDto cart = await LoadCartBasedOnLoggedInUser();
+            return View(cart);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ActionName("Checkout")]
+        public async Task<IActionResult> Checkout(CartDto cartDto)
+        {
+            CartDto cart = await LoadCartBasedOnLoggedInUser();
+            cart.CartHeader.Name = cartDto.CartHeader.Name;
+            cart.CartHeader.Phone = cartDto.CartHeader.Phone;
+            cart.CartHeader.Email = cartDto.CartHeader.Email;
+
+            var response = await _orderService.CreateOrderAsync(cart);
+            if(response != null && response.IsSuccess)
+            {
+                OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
+                TempData["success"] = "Item placed successfully";
+                //return RedirectToAction(nameof(CartIndex));
+            }
+            else
+            {
+                TempData["error"] = "Error placing order";
+            }
+            
             return View(cart);
         }
 

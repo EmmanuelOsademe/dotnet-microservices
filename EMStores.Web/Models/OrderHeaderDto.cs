@@ -1,6 +1,4 @@
-﻿using EMStore.Services.OrderAPI.Models;
-
-namespace EMStore.Services.OrderAPI.Dtos
+﻿namespace EMStores.Web.Models
 {
     public class OrderHeaderDto
     {
