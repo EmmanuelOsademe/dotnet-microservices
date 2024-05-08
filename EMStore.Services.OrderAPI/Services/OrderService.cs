@@ -2,13 +2,12 @@
 using EMStore.Services.OrderAPI.Dtos;
 using EMStore.Services.OrderAPI.Mappers;
 using EMStore.Services.OrderAPI.Models;
-using EMStore.Services.OrderAPI.Repository.Interfaces;
 using EMStore.Services.OrderAPI.Services.IServices;
 using EMStore.Services.OrderAPI.Utility;
 
 namespace EMStore.Services.OrderAPI.Services
 {
-    public class OrderService(IOrderDetailsRepository orderDetailsRepo, IOrderHeaderRepository orderHeaderRepo, ApplicationDbContext dbContext) : IOrderService
+    public class OrderService(ApplicationDbContext dbContext) : IOrderService
     {
 
         private readonly ApplicationDbContext _dbContext = dbContext;
@@ -19,10 +18,12 @@ namespace EMStore.Services.OrderAPI.Services
             headerDto.OrderTime = DateTime.Now;
             headerDto.Status = StaticDetails.Status_Pending;
 
-            OrderHeader orderHeaderCreated = await _dbContext.OrderHeaders.AddAsync(headerDto.ToOrderHeaderFromOrderHeaderDto());
+            OrderHeader header = headerDto.ToOrderHeaderFromOrderHeaderDto();
+
+            var orderHeaderCreated = await _dbContext.OrderHeaders.AddAsync(header);
             await _dbContext.SaveChangesAsync();
 
-            headerDto.OrderHeaderId = orderHeaderCreated.OrderHeaderId;
+            headerDto.OrderHeaderId = orderHeaderCreated.Entity.OrderHeaderId;
             return headerDto;
         }
     }

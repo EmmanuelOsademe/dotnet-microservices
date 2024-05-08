@@ -76,8 +76,10 @@ namespace EMStore.Services.OrderAPI.Mappers
                 Phone = headerDto.Phone,
                 Email = headerDto.Email,
                 OrderTime = headerDto.OrderTime,
-                OrderDetails = headerDto.OrderDetails
             };
+
+            var orderDetails = headerDto.OrderDetails.Select(order => order.ToOrderDetailsFromOrderDetailsDto());
+            order.OrderDetails = orderDetails;
 
             return order;
         }

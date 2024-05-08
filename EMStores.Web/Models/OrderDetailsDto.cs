@@ -1,4 +1,4 @@
-﻿namespace EMStore.Services.OrderAPI.Dtos
+﻿namespace EMStores.Web.Models
 {
     public class OrderDetailsDto
     {

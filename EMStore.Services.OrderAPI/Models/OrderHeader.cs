@@ -32,11 +32,6 @@ namespace EMStore.Services.OrderAPI.Models
 
         public string StripeSessionId { get; set; } = string.Empty;
 
-        public IEnumerable<OrderDetailsDto> OrderDetails { get; set; } = [];
-
-        public static implicit operator OrderHeader(EntityEntry<OrderHeader> v)
-        {
-            throw new NotImplementedException();
-        }
+        public IEnumerable<OrderDetails> OrderDetails { get; set; }
     }
 }
