@@ -1,5 +1,6 @@
 using EMStore.Services.OrderAPI.Data;
 using EMStore.Services.OrderAPI.Extensions;
+using EMStore.Services.OrderAPI.Services;
 using EMStore.Services.OrderAPI.Services.IServices;
 using EMStore.Services.OrderAPI.Utility;
 using EMStore.Services.ShoppingCartAPI.Services;
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IMessageBus, MessageBus>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

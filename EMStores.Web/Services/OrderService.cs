@@ -17,9 +17,7 @@ namespace EMStores.Web.Services
                 Data = cartDto
             };
 
-            var response = await _baseService.SendAsync(request);
-
-            return response;
+            return await _baseService.SendAsync(request);
         }
     }
 }

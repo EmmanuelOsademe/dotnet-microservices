@@ -13,11 +13,11 @@ namespace EMStore.Services.OrderAPI.Controllers
         private readonly IOrderService _orderService = orderService;
         private readonly ResponseDto response = new();
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("CreateOrder")]
         public async Task<IActionResult> CreateOrder([FromBody] CartDto cartDto)
         {
-
+            Console.WriteLine(cartDto);
             try
             {
                 OrderHeaderDto headerDto = await _orderService.CreateOrderAsync(cartDto);
@@ -31,6 +31,15 @@ namespace EMStore.Services.OrderAPI.Controllers
                 return BadRequest(response);
             }
 
+        }
+
+        ////[Authorize]
+        public async Task<IActionResult> Testing()
+        {
+            response.IsSuccess = true;
+            response.Message = "Testing";
+
+            return Ok(response);
         }
 
     }

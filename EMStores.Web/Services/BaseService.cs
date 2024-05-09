@@ -67,6 +67,8 @@ namespace EMStores.Web.Services
 						return new ResponseDto() { IsSuccess = false, Message = "Unauthorized" };
 					case HttpStatusCode.InternalServerError:
 						return new ResponseDto() { IsSuccess = false, Message = "Interval Server Error" };
+					case HttpStatusCode.BadRequest:
+						return new ResponseDto() { IsSuccess = false, Message = "Bad Request" };
 					default:
 						var apiContent = await apiResponse.Content.ReadAsStringAsync();
 						var apiResponseDto = JsonConvert.DeserializeObject<ResponseDto>(apiContent);
