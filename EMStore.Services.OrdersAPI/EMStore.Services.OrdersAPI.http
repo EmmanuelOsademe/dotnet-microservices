@@ -1,0 +1,6 @@
+@EMStore.Services.OrdersAPI_HostAddress = http://localhost:5297
+
+GET {{EMStore.Services.OrdersAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

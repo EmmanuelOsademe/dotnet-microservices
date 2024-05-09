@@ -1,11 +1,10 @@
-using EMStore.Services.ShoppingCartAPI.Data;
-using EMStore.Services.ShoppingCartAPI.Extensions;
-using EMStore.Services.ShoppingCartAPI.Repositories;
-using EMStore.Services.ShoppingCartAPI.Repositories.Interfaces;
-using EMStore.Services.ShoppingCartAPI.Services;
-using EMStore.Services.ShoppingCartAPI.Services.IServices;
-using EMStore.Services.ShoppingCartAPI.Utility;
-using EMStores.MessageBus;
+using EMStore.Services.OrdersAPI.Data;
+using EMStore.Services.OrdersAPI.Extensions;
+using EMStore.Services.OrdersAPI.Repository;
+using EMStore.Services.OrdersAPI.Repository.Interfaces;
+using EMStore.Services.OrdersAPI.Services;
+using EMStore.Services.OrdersAPI.Services.IServices;
+using EMStore.Services.OrdersAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -18,18 +17,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICouponService, CouponService>();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<BackendAPIAuthenticationHttpClientHandler>();
-builder.Services.AddScoped<IMessageBus, MessageBus>();
-
 builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(
     builder.Configuration["ServiceUrls:ProductAPI"] ?? string.Empty
     )).AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();
-builder.Services.AddHttpClient("Coupon", u => u.BaseAddress = new Uri(
-    builder.Configuration["ServiceUrls:CouponAPI"] ?? string.Empty
-    )).AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();
+
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -61,9 +54,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.AddAppAuthentication();
-
 builder.Services.AddAuthorization();
-builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 var app = builder.Build();
 
@@ -84,6 +75,7 @@ app.MapControllers();
 ApplyMigration();
 
 app.Run();
+
 
 void ApplyMigration()
 {
