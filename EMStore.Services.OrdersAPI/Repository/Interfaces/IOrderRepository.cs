@@ -5,5 +5,6 @@ namespace EMStore.Services.OrdersAPI.Repository.Interfaces
     public interface IOrderRepository
     {
         Task<OrderHeaderDto> CreateOrderAsync(CartDto cartDto);
+        Task<IEnumerable<OrderDetailsDto>> GetDetailsAsync(int orderHeaderId);
     }
 }

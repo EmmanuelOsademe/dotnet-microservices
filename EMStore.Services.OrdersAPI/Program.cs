@@ -8,6 +8,7 @@ using EMStore.Services.OrdersAPI.Utility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,7 @@ builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(
     )).AddHttpMessageHandler<BackendAPIAuthenticationHttpClientHandler>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, ProductsService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -52,6 +53,8 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
 builder.AddAppAuthentication();
 builder.Services.AddAuthorization();

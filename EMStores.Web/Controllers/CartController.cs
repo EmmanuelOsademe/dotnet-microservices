@@ -53,6 +53,12 @@ namespace EMStores.Web.Controllers
             return View(cart);
         }
 
+        //[Authorize]
+        public async Task<IActionResult> Confirmation( int orderId)
+        {
+            return View(orderId);
+        }
+
 
         public async Task<IActionResult> RemoveCartItem(int cartDetailsId)
         {

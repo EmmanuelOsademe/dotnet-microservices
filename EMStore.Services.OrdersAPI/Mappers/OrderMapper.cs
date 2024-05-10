@@ -5,10 +5,10 @@ namespace EMStore.Services.OrdersAPI.Mappers
 {
     public static class OrderMapper
     {
-        public static OrderHeaderDto ToOrderHeaderDtoFromCartHeaderDto(this CartHeaderDto cartHeaderDto)
+        public static OrderHeader ToOrderHeaderFromCartHeaderDto(this CartHeaderDto cartHeaderDto)
         {
 
-            return new OrderHeaderDto
+            return new OrderHeader
             {
                 UserId = cartHeaderDto.UserId,
                 CouponCode = cartHeaderDto.CouponCode,
@@ -20,18 +20,44 @@ namespace EMStore.Services.OrdersAPI.Mappers
             };
         }
 
-        public static OrderHeader ToOrderHeaderFromOrderHeaderDto(this OrderHeaderDto headerDto)
+        public static OrderHeaderDto ToOrderHeaderDtoFromOrderHeader(this OrderHeader header)
         {
-            return new OrderHeader
+            return new OrderHeaderDto
             {
-                UserId = headerDto.UserId,
-                CouponCode = headerDto.CouponCode,
-                Discount = headerDto.Discount,
-                OrderTotal = headerDto.OrderTotal,
-                Name = headerDto.Name,
-                Phone = headerDto.Phone,
-                Email = headerDto.Email,
-                OrderTime = DateTime.Now
+                UserId = header.UserId,
+                CouponCode = header.CouponCode,
+                Discount = header.Discount,
+                OrderTotal = header.OrderTotal,
+                Name = header.Name,
+                Phone = header.Phone,
+                Email = header.Email,
+                OrderHeaderId = header.OrderHeaderId,
+                Status = header.Status,
+                OrderTime = header.OrderTime
+            };
+        }
+
+        public static OrderDetailsDto ToOrderDetailsDtoFromOrderDetails(this OrderDetails details)
+        {
+            return new OrderDetailsDto
+            {
+                OrderDetailsId = details.OrderDetailsId,
+                OrderHeaderId = details.OrderHeaderId,
+                ProductId = details.ProductId,
+                ProductName = details.ProductName,
+                Price = details.Price,
+                Count = details.Count,
+            };
+        }
+
+        public static OrderDetails ToOrderDetailsFromOrderDetailsDto(this OrderDetailsDto orderDetailsDto)
+        {
+            return new OrderDetails
+            {
+                ProductId = orderDetailsDto.ProductId,
+                Count = orderDetailsDto.Count,
+                ProductName = orderDetailsDto.ProductName,
+                Price = orderDetailsDto.Price
             };
         }
     }
