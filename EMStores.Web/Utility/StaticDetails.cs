@@ -12,7 +12,14 @@
 		public const string RoleCustomer = "CUSTOMER";
 		public const string TokenCookie = "JwtToken";
 
-		public enum ApiType
+        public const string Status_Pending = "Pending";
+        public const string Status_Approved = "Approved";
+        public const string Status_ReadyForPickup = "ReadyFroPickup";
+        public const string Status_Completed = "Completed";
+        public const string Status_Refunded = "Refunded";
+        public const string Status_Cancelled = "Cancelled";
+
+        public enum ApiType
 		{
 			GET,
 			POST,

@@ -6,5 +6,7 @@ namespace EMStores.Web.Services.IServices
     public interface IOrderService
     {
         Task<ResponseDto?> CreateOrderAsync(CartDto cartDto);
+        Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto);
+        Task<ResponseDto?> ValidateStripeSession(int orderHeaderId);
     }
 }

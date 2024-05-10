@@ -2,6 +2,7 @@
 using EMStores.Web.Models.Dtos;
 using EMStores.Web.Models.Dtos.Cart;
 using EMStores.Web.Services.IServices;
+using EMStores.Web.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -42,8 +43,21 @@ namespace EMStores.Web.Controllers
             if(response != null && response.IsSuccess)
             {
                 OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
-                TempData["success"] = "Item placed successfully";
-                //return RedirectToAction(nameof(CartIndex));
+
+                var domain = $"{Request.Scheme}://{Request.Host.Value}/";
+
+                StripeRequestDto stripeRequestDto = new()
+                {
+                    ApprovedUrl = $"{domain}cart/Confirmation?orderId={orderHeaderDto.OrderHeaderId}",
+                    CancelUrl = $"{domain}/cart/Checkout",
+                    OrderHeader = orderHeaderDto
+                };
+
+                var stripeResponse = await _orderService.CreateStripeSession(stripeRequestDto);
+                StripeRequestDto stripeResponseObj = JsonConvert.DeserializeObject<StripeRequestDto>(Convert.ToString(stripeResponse.Result));
+
+                Response.Headers.Add("Location", stripeResponseObj.StripeSessionUrl);
+                return new StatusCodeResult(303);
             }
             else
             {
@@ -51,6 +65,25 @@ namespace EMStores.Web.Controllers
             }
             
             return View(cart);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Confirmation( int orderId)
+        {
+            ResponseDto? response = await _orderService.ValidateStripeSession(orderId);
+            if( response != null && response.IsSuccess )
+            {
+                OrderHeaderDto orderHeaderDto = JsonConvert.DeserializeObject<OrderHeaderDto>(Convert.ToString(response.Result));
+                if(orderHeaderDto.Status == StaticDetails.Status_Approved)
+                {
+                    TempData["success"] = "Payment successful";
+                    return View(orderId);
+                }
+                
+            }
+            TempData["error"] = "Payment failed";
+            // Redirect to the error page
+            return View(orderId);
         }
 
 

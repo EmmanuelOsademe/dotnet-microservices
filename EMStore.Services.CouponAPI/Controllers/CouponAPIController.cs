@@ -5,6 +5,7 @@ using EMStore.Services.CouponAPI.Mappers;
 using EMStore.Services.CouponAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace EMStore.Services.CouponAPI.Controllers
 {
@@ -15,7 +16,7 @@ namespace EMStore.Services.CouponAPI.Controllers
 	{
 
 		private readonly ICouponRepository _couponRepo = couponRepo;
-		private ResponseDto response = new ResponseDto();
+        private ResponseDto response = new();
 
 		[HttpGet]
 		public async Task<IActionResult> GetAllAsync([FromQuery] CouponQuery query)
@@ -110,12 +111,23 @@ namespace EMStore.Services.CouponAPI.Controllers
 				var coupon = await _couponRepo.CreateCouponAsync(couponDto.ToCouponFromCreateDto());
 				if (coupon == null)
 				{
-					response.IsSuccess = false;
+                    response.IsSuccess = false;
 					response.Message = "Coupon not created";
 				}
 				else
 				{
-					response.IsSuccess = true;
+                    // Create the coupon in Stripe
+                    var options = new CouponCreateOptions
+                    {
+                        Name = couponDto.CouponCode,
+                        Currency = "usd",
+                        Id = couponDto.CouponCode,
+                        AmountOff = (long)(couponDto.DiscountAmount * 100),
+                    };
+                    var service = new CouponService();
+                    service.Create(options);
+
+                    response.IsSuccess = true;
 					response.Result = coupon.ToCouponDto();
 				}
 				return Ok(response);
@@ -126,8 +138,6 @@ namespace EMStore.Services.CouponAPI.Controllers
 				response.Message = ex.Message ?? "Something went wrong";
 				return BadRequest(response);
 			}
-
-
 		}
 
 		[HttpPut]
@@ -147,7 +157,7 @@ namespace EMStore.Services.CouponAPI.Controllers
 				}
 				else
 				{
-					response.IsSuccess = true;
+                    response.IsSuccess = true;
 					response.Result = coupon.ToCouponDto();
 				}
 
@@ -172,12 +182,16 @@ namespace EMStore.Services.CouponAPI.Controllers
 				var coupon = await _couponRepo.DeleteCouponByIdAsync(id);
 				if (coupon == null)
 				{
-					response.IsSuccess = false;
+                    response.IsSuccess = false;
 					response.Message = "Coupon not found";
 				}
 				else
 				{
-					response.IsSuccess = true;
+                    // Delete the coupon from stripe
+                    var service = new CouponService();
+                    service.Delete(coupon.CouponCode);
+
+                    response.IsSuccess = true;
 					response.Result = coupon.ToCouponDto();
 				}
 

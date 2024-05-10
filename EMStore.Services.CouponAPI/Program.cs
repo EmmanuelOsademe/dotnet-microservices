@@ -54,6 +54,8 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 
+Stripe.StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
