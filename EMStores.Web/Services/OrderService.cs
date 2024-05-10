@@ -19,5 +19,29 @@ namespace EMStores.Web.Services
 
             return await _baseService.SendAsync(request);
         }
+
+        public async Task<ResponseDto?> CreateStripeSession(StripeRequestDto stripeRequestDto)
+        {
+            var request = new RequestDto
+            {
+                ApiType = StaticDetails.ApiType.POST,
+                ApiUrl = StaticDetails.OrderAPIBaseUrl + "/api/order/CreateStripeSession",
+                Data = stripeRequestDto
+            };
+
+            return await _baseService.SendAsync(request);
+        }
+
+        public async  Task<ResponseDto?> ValidateStripeSession(int orderHeaderId)
+        {
+            var request = new RequestDto
+            {
+                ApiType = StaticDetails.ApiType.POST,
+                ApiUrl = StaticDetails.OrderAPIBaseUrl + "/api/order/ValidateStripeSession",
+                Data = orderHeaderId
+            };
+
+            return await _baseService.SendAsync(request);
+        }
     }
 }

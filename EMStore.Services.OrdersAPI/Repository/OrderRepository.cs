@@ -63,5 +63,39 @@ namespace EMStore.Services.OrdersAPI.Repository
             }
             return detailsDto;
         }
+
+        public async Task<OrderHeader> GetOrderByOrderIdAsync(int orderHeaderId)
+        {
+            OrderHeader orderHeader = await _dbContext.OrderHeaders.FirstAsync(u => u.OrderHeaderId == orderHeaderId);
+            return orderHeader;
+        }
+
+        public async  Task<OrderHeaderDto?> UpdateOrderHeaderAsync(OrderHeaderUpdateDto updateDto)
+        {
+            OrderHeader orderHeader = await _dbContext.OrderHeaders.FirstAsync(u => u.OrderHeaderId == updateDto.OrderHeaderId);
+            if(orderHeader == null)
+            {
+                return null;
+            }
+
+            if(!string.IsNullOrEmpty(updateDto.StripeSessionId))
+            {
+                orderHeader.StripeSessionId = updateDto.StripeSessionId;
+            }
+
+            if (!string.IsNullOrEmpty(updateDto.PaymentIntentId))
+            {
+                orderHeader.PaymentIntentId = updateDto.PaymentIntentId;
+            }
+
+            if (!string.IsNullOrEmpty(updateDto.Status))
+            {
+                orderHeader.Status = updateDto.Status;
+            }
+            
+            await _dbContext.SaveChangesAsync();
+
+            return orderHeader.ToOrderHeaderDtoFromOrderHeader();
+        }
     }
 }

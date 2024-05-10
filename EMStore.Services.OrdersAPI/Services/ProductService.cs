@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace EMStore.Services.OrdersAPI.Services
 {
-    public class ProductsService(IHttpClientFactory httpClientFactory) : IProductService
+    public class ProductService(IHttpClientFactory httpClientFactory) : IProductService
     {
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
         public async Task<IEnumerable<ProductDto>> GetProducts()
