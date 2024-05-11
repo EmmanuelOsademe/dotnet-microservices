@@ -1,6 +1,7 @@
 ﻿using EMStore.Services.EmailAPI.Data;
 using EMStore.Services.EmailAPI.Dtos;
 using EMStore.Services.EmailAPI.Dtos.Cart;
+using EMStore.Services.EmailAPI.Message;
 using EMStore.Services.EmailAPI.Models;
 using EMStore.Services.EmailAPI.Repositories;
 using EMStore.Services.EmailAPI.Repositories.Interfaces;
@@ -54,6 +55,12 @@ namespace EMStore.Services.EmailAPI.Services
             await _emailRepository.LogAndEmailAsync(message.ToString(), "emma.osademe@gmail.com");
 
             await SendMailAsync("emma.osademe@gmail.com", "New User Registration", message.ToString());
+        }
+
+        public async Task LogAndEmailPlacedOrder(RewardMessage rewardMessage)
+        {
+            string message = "New Order Placed. <br /> OrderId: " + rewardMessage.OrderId;
+            await _emailRepository.LogAndEmailAsync(message.ToString(), "emma.osademe@gmail.com");
         }
 
         private async Task SendMailAsync (string to, string subject, string body)

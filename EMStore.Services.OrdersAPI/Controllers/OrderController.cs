@@ -1,6 +1,7 @@
 ﻿using EMStore.Services.OrdersAPI.Dtos;
 using EMStore.Services.OrdersAPI.Repository.Interfaces;
 using EMStore.Services.OrdersAPI.Utility;
+using EMStores.MessageBus;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,11 @@ namespace EMStore.Services.OrdersAPI.Controllers
 {
     [Route("api/order")]
     [ApiController]
-    public class OrderController(IOrderRepository orderRepository) : ControllerBase
+    public class OrderController(IOrderRepository orderRepository, IMessageBus messageBus, IConfiguration config) : ControllerBase
     {
         private readonly IOrderRepository _orderRepository = orderRepository;
+        private readonly IMessageBus _messageBus = messageBus;
+        private readonly IConfiguration _config = config;
         private readonly ResponseDto response = new();
 
         [Authorize]
@@ -122,6 +125,7 @@ namespace EMStore.Services.OrdersAPI.Controllers
                 var service = new Stripe.Checkout.SessionService();
                 if(orderHeader != null)
                 {
+                    // Validate Successful payment
                     Session session = service.Get(orderHeader.StripeSessionId);
 
                     var paymentIntentService = new PaymentIntentService();
@@ -129,6 +133,7 @@ namespace EMStore.Services.OrdersAPI.Controllers
 
                     if(paymentIntent.Status == "succeeded")
                     {
+                        // Update Order Header
                         var updateDto = new OrderHeaderUpdateDto
                         {
                             OrderHeaderId = orderHeaderId,
@@ -137,6 +142,17 @@ namespace EMStore.Services.OrdersAPI.Controllers
                         };
 
                         var orderHeaderDto = await _orderRepository.UpdateOrderHeaderAsync(updateDto);
+
+                        // Publish successful order to service bus
+                        RewardsDto rewardsDto = new()
+                        {
+                            OrderId = orderHeader.OrderHeaderId,
+                            UserId = orderHeader.UserId,
+                            RewardsActivity = Convert.ToInt32(orderHeader.OrderTotal)
+                        };
+                        string topicName = _config.GetValue<string>("TopicAndQueueNames:OrderCreatedTopic") ?? string.Empty;
+                        string serviceBusConnectionString = _config.GetValue<string>("ServiceBusConnectionString") ?? string.Empty;
+                        await _messageBus.PublishMessage(rewardsDto, topicName, serviceBusConnectionString);
                         response.Result = orderHeaderDto;
                     }
                 }
