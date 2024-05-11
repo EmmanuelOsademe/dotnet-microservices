@@ -3,5 +3,6 @@
     public interface IEmailRepository
     {
         Task<bool> LogAndEmailAsync(string message, string email);
+
     }
 }

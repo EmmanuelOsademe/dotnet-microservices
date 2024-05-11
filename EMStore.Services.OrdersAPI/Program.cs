@@ -5,6 +5,7 @@ using EMStore.Services.OrdersAPI.Repository.Interfaces;
 using EMStore.Services.OrdersAPI.Services;
 using EMStore.Services.OrdersAPI.Services.IServices;
 using EMStore.Services.OrdersAPI.Utility;
+using EMStores.MessageBus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -23,6 +24,7 @@ builder.Services.AddHttpClient("Product", u => u.BaseAddress = new Uri(
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IMessageBus, MessageBus>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
