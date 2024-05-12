@@ -3,10 +3,8 @@ using EMStore.Services.OrdersAPI.Repository.Interfaces;
 using EMStore.Services.OrdersAPI.Utility;
 using EMStores.MessageBus;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
-using Stripe.BillingPortal;
 using Stripe.Checkout;
 using Session = Stripe.Checkout.Session;
 
@@ -161,6 +159,102 @@ namespace EMStore.Services.OrdersAPI.Controllers
                     response.IsSuccess = false;
                 }
 
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message ?? "Error creating stripe session";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetOrders")]
+        public async Task<IActionResult> GetOrders([FromRoute] string? userId = "")
+        {
+            try
+            {
+                List<OrderDto> orders = new();
+                if (User.IsInRole(StaticDetails.RoleAdmin))
+                {
+                    orders = await _orderRepository.GetOrdersAsAdminAsync();
+                }else
+                {
+                    if (string.IsNullOrEmpty(userId))
+                    {
+                        throw new Exception("User Id is required");
+                    }
+                    orders = await _orderRepository.GetUserOrdersAsync(userId);
+                }
+
+                response.Result = orders;
+                response.IsSuccess = true;
+                return Ok(response);
+            }catch(Exception ex)
+            {
+                response.Message = ex.Message ?? "Error creating stripe session";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("GetOrder/{orderId:int}")]
+        public async Task<IActionResult> GetOrderById(int orderId)
+        {
+            try
+            {
+                var order = await _orderRepository.GetOrderByIdAsync(orderId);
+                if(order == null)
+                {
+                    response.Message = "Order not found";
+                    response.IsSuccess = false;
+                }
+                else
+                {
+                    response.Result = order;
+                    response.IsSuccess = true;
+                }
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message ?? "Error creating stripe session";
+                response.IsSuccess = false;
+                return BadRequest(response);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("UpdateOrderStatus/{orderId:int}")]
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, [FromBody] string newStatus)
+        {
+            try
+            {
+                var updateDto = new OrderHeaderUpdateDto
+                {
+                    OrderHeaderId = orderId,
+                    Status = newStatus
+                };
+
+                var orderHeaderDto = await _orderRepository.UpdateOrderHeaderAsync(updateDto) ?? throw new Exception("Order not found");
+
+                if(newStatus == StaticDetails.Status_Cancelled)
+                {
+                    // Give a refund
+                    var options = new RefundCreateOptions
+                    {
+                        Reason = RefundReasons.RequestedByCustomer,
+                        PaymentIntent = orderHeaderDto.PaymentIntentId
+                    };
+
+                    var service = new RefundService();
+                    Refund refund = service.Create(options);
+                }
+                
+                response.Result = orderHeaderDto;
+                response.IsSuccess = true;
                 return Ok(response);
             }
             catch (Exception ex)

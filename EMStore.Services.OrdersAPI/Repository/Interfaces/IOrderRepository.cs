@@ -1,5 +1,6 @@
 ﻿using EMStore.Services.OrdersAPI.Dtos;
 using EMStore.Services.OrdersAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EMStore.Services.OrdersAPI.Repository.Interfaces
 {
@@ -10,5 +11,11 @@ namespace EMStore.Services.OrdersAPI.Repository.Interfaces
         Task <OrderHeaderDto?> UpdateOrderHeaderAsync(OrderHeaderUpdateDto updateDto);
 
         Task<OrderHeader> GetOrderByOrderIdAsync(int orderHeaderId);
+
+        Task<List<OrderDto>> GetUserOrdersAsync(string userId);
+
+        Task<List<OrderDto>> GetOrdersAsAdminAsync();
+
+        Task<OrderDto> GetOrderByIdAsync(int orderHeaderId);
     }
 }

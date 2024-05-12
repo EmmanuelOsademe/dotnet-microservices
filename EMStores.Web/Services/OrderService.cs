@@ -32,6 +32,40 @@ namespace EMStores.Web.Services
             return await _baseService.SendAsync(request);
         }
 
+        public async Task<ResponseDto?> GetAllOrders(string? userId)
+        {
+            var request = new RequestDto
+            {
+                ApiType = StaticDetails.ApiType.GET,
+                ApiUrl = StaticDetails.OrderAPIBaseUrl + $"/api/order/GetOrders/{userId}",
+            };
+
+            return await _baseService.SendAsync(request);
+        }
+
+        public async Task<ResponseDto?> GetOrder(int orderId)
+        {
+            var request = new RequestDto
+            {
+                ApiType = StaticDetails.ApiType.GET,
+                ApiUrl = StaticDetails.OrderAPIBaseUrl + $"/api/order/GetOrders/{orderId}",
+            };
+
+            return await _baseService.SendAsync(request);
+        }
+
+        public async Task<ResponseDto?> UpdateOrderStatus(int orderId, string newStatus)
+        {
+            var request = new RequestDto
+            {
+                ApiType = StaticDetails.ApiType.POST,
+                ApiUrl = StaticDetails.OrderAPIBaseUrl + $"/api/order/UpdateOrderStatus/{orderId}",
+                Data = newStatus
+            };
+
+            return await _baseService.SendAsync(request);
+        }
+
         public async  Task<ResponseDto?> ValidateStripeSession(int orderHeaderId)
         {
             var request = new RequestDto

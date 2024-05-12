@@ -64,19 +64,75 @@ namespace EMStore.Services.OrdersAPI.Repository
             return detailsDto;
         }
 
+        public async Task<OrderDto> GetOrderByIdAsync(int orderHeaderId)
+        {
+            var orderHeader = await _dbContext.OrderHeaders.FirstOrDefaultAsync(order => order.OrderHeaderId == orderHeaderId) ?? throw new Exception("Order not found");
+
+            var orderDetails = await _dbContext.OrderDetails.Where(order => order.OrderHeaderId == orderHeaderId).ToListAsync();
+
+            var orderHeaderDto = orderHeader.ToOrderHeaderDtoFromOrderHeader();
+            var orderDetailsDto = orderDetails.Select(order => order.ToOrderDetailsDtoFromOrderDetails()).ToList();
+
+            return new OrderDto()
+            {
+                OrderHeader = orderHeaderDto,
+                OrderDetails = orderDetailsDto
+            };
+        }
+
         public async Task<OrderHeader> GetOrderByOrderIdAsync(int orderHeaderId)
         {
             OrderHeader orderHeader = await _dbContext.OrderHeaders.FirstAsync(u => u.OrderHeaderId == orderHeaderId);
             return orderHeader;
         }
 
+        public async Task<List<OrderDto>> GetOrdersAsAdminAsync()
+        {
+            var orderHeaders = await _dbContext.OrderHeaders.OrderByDescending(order => order.OrderHeaderId).ToListAsync();
+
+            List<OrderDto> orders = [];
+
+            foreach (var item in orderHeaders)
+            {
+                var orderDetails = await _dbContext.OrderDetails.Where(order => order.OrderHeaderId == item.OrderHeaderId).ToListAsync();
+                var orderHeaderDto = item.ToOrderHeaderDtoFromOrderHeader();
+                var orderDetailsDto = orderDetails.Select(order => order.ToOrderDetailsDtoFromOrderDetails()).ToList();
+
+                orders.Add(new OrderDto
+                {
+                    OrderHeader = orderHeaderDto,
+                    OrderDetails = orderDetailsDto
+                });
+            }
+
+            return orders;
+        }
+
+        public async Task<List<OrderDto>> GetUserOrdersAsync(string userId)
+        {
+            var orderHeaders = await _dbContext.OrderHeaders.Where(order => order.UserId == userId).OrderByDescending(order => order.OrderHeaderId).ToListAsync();
+
+            List<OrderDto> orders = [];
+
+            foreach(var item in orderHeaders)
+            {
+                var orderDetails = await _dbContext.OrderDetails.Where(order => order.OrderHeaderId == item.OrderHeaderId).ToListAsync();
+                var orderHeaderDto = item.ToOrderHeaderDtoFromOrderHeader();
+                var orderDetailsDto = orderDetails.Select(order => order.ToOrderDetailsDtoFromOrderDetails()).ToList();
+
+                orders.Add(new OrderDto
+                {
+                    OrderHeader = orderHeaderDto,
+                    OrderDetails = orderDetailsDto
+                });
+            }
+
+            return orders;
+        }
+
         public async  Task<OrderHeaderDto?> UpdateOrderHeaderAsync(OrderHeaderUpdateDto updateDto)
         {
-            OrderHeader orderHeader = await _dbContext.OrderHeaders.FirstAsync(u => u.OrderHeaderId == updateDto.OrderHeaderId);
-            if(orderHeader == null)
-            {
-                return null;
-            }
+            OrderHeader orderHeader = await _dbContext.OrderHeaders.FirstAsync(u => u.OrderHeaderId == updateDto.OrderHeaderId) ?? throw new Exception("Order not found");
 
             if(!string.IsNullOrEmpty(updateDto.StripeSessionId))
             {
