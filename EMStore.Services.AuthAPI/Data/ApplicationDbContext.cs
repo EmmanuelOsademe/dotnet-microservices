@@ -13,12 +13,4 @@ namespace EMStore.Services.AuthAPI.Data
 			base.OnModelCreating(modelBuilder);
 		}
 	}
-
-	//public class ApplicationDbContext : DbContext
-	//{
-	//	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-	//	{
-
-	//	}
-	//}
 }
