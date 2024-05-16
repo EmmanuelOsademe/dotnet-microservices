@@ -19,7 +19,7 @@ namespace EMStores.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            IEnumerable<OrderHeaderDto> ordersHeaders = [];
+            List<OrderHeaderDto> ordersHeaders = [];
             string userId = "";
             if (!User.IsInRole(StaticDetails.RoleAdmin))
             {
@@ -32,7 +32,7 @@ namespace EMStores.Web.Controllers
                 var orders = JsonConvert.DeserializeObject<List<OrderDto>>(Convert.ToString(response.Result));
                 foreach(var item in orders)
                 {
-                    ordersHeaders.Append(item.OrderHeader);
+                    ordersHeaders.Add(item.OrderHeader);
                 }
             }
             else
