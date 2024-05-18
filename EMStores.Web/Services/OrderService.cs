@@ -48,7 +48,7 @@ namespace EMStores.Web.Services
             var request = new RequestDto
             {
                 ApiType = StaticDetails.ApiType.GET,
-                ApiUrl = StaticDetails.OrderAPIBaseUrl + $"/api/order/GetOrders/{orderId}",
+                ApiUrl = StaticDetails.OrderAPIBaseUrl + $"/api/order/GetOrder/{orderId}",
             };
 
             return await _baseService.SendAsync(request);
