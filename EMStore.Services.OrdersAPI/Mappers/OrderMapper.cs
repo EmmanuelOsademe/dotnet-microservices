@@ -33,7 +33,9 @@ namespace EMStore.Services.OrdersAPI.Mappers
                 Email = header.Email,
                 OrderHeaderId = header.OrderHeaderId,
                 Status = header.Status,
-                OrderTime = header.OrderTime
+                OrderTime = header.OrderTime,
+                PaymentIntentId = header.PaymentIntentId,
+                StripeSessionId = header.StripeSessionId
             };
         }
 

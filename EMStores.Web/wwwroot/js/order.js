@@ -1,24 +1,45 @@
 let dataTable;
 $(document).ready(function () {
-    loadDataTable();
+    var url = window.location.search;
+
+    if (url.includes("approved")) {
+        loadDataTable("approved")
+    } else if (url.includes("readyforpickup")) {
+        loadDataTable("readyforpickup")
+    } else if (url.includes("cancelled")) {
+        loadDataTable("cancelled")
+    } else {
+        loadDataTable("all")
+    }
 });
 
-function loadDataTable() {
+function loadDataTable(status) {
     /*let dataTable = new DataTable('#tblData');*/
 
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            url: "/order/getall",
+            order: [[0, 'desc']],
+            url: "/order/getall?status=" + status,
             type: "GET"
         },
         columns: [
             { data: "orderHeaderId", "width": "5%" },
-            { data: "email", width: "10%"},
-            { data: "name", "width": "25%" },
-            { data: "phone", width: "15%" },
-            { data: "status", width: "15%" },
-            { data: "orderTotal", width: "15%" },
-            { data: "_", width: "15%" },
+            { data: "email", width: "25%"},
+            { data: "name", "width": "20%" },
+            { data: "phone", width: "10%" },
+            { data: "status", width: "10%" },
+            { data: "orderTotal", width: "10" },
+            {
+                data: 'orderHeaderId',
+                "render": function (data) {
+                    return `<div class="w-75 btn-group" role="group">
+                        <a href="/order/orderDetail?orderId=${data}" class="btn btn-primary mx-2">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                    </div>`
+                },
+                width: "10%"
+            }
         ]
     })
 }
