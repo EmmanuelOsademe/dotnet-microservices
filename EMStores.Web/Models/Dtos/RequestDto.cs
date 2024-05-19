@@ -10,6 +10,8 @@ namespace EMStores.Web.Models.Dtos
 
         public string AccessToken = string.Empty;
 
+        public ContentType ContentType { get; set; } = ContentType.Json;
+
         public Dictionary<string, string?>? Query { get; set; }
     }
 }
