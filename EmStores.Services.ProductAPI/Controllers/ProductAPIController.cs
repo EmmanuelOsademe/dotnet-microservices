@@ -22,7 +22,8 @@ namespace EmStores.Services.ProductAPI.Controllers
 		{
 			try
 			{
-				var product = await _productRepo.CreateProductAsync(createProductDto.ToProductFromCreateProductDto());
+				var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+				var product = await _productRepo.CreateProductAsync(createProductDto, baseUrl);
 
 				response.IsSuccess = product != null;
 				response.Message = product == null ? "Product not created" : "Product successfully created";
