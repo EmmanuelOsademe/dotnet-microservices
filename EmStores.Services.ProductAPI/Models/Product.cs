@@ -22,5 +22,7 @@ namespace EmStores.Services.ProductAPI.Models
 
 		[Required]
 		public string ImageUrl { get; set; } = string.Empty;
+
+		public string? ImageLocalPath { get; set; } = string.Empty;
 	}
 }

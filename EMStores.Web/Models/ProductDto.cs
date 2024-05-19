@@ -16,6 +16,8 @@ namespace EMStores.Web.Models
 		public string Category { get; set; } = string.Empty;
 
 		public string ImageUrl { get; set; } = string.Empty;
+		public string? ImageLocalPath { get; set; } = string.Empty;
+		public IFormFile? Image { get; set; }
 
 		[Range(1, 100)]
 		public int Count { get; set; } = 1;

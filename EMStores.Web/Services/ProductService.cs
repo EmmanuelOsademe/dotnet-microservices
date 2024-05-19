@@ -16,7 +16,8 @@ namespace EMStores.Web.Services
 			{
 				ApiType = StaticDetails.ApiType.POST,
 				ApiUrl = StaticDetails.ProductAPIBaseUrl + "/api/product",
-				Data = createProductDto
+				Data = createProductDto,
+				ContentType = StaticDetails.ContentType.MultipartFormData
 			};
 
 			return await _baseService.SendAsync(requestDto);
@@ -62,7 +63,8 @@ namespace EMStores.Web.Services
 			{
 				ApiType = StaticDetails.ApiType.PUT,
 				ApiUrl = StaticDetails.ProductAPIBaseUrl + $"/api/product/{id}",
-				Data = updateProductDto
+				Data = updateProductDto,
+				ContentType = StaticDetails.ContentType.MultipartFormData
 			};
 
 			return await _baseService.SendAsync(requestDto);

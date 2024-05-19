@@ -14,7 +14,8 @@ namespace EmStores.Services.ProductAPI.Mappers
 				Description = product.Description,
 				Price = product.Price,
 				Category = product.Category,
-				ImageUrl = product.ImageUrl
+				ImageUrl = product.ImageUrl,
+				ImageLocalPath  = product.ImageLocalPath,
 			};
 		}
 
