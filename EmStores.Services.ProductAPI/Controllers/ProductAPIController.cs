@@ -16,14 +16,14 @@ namespace EmStores.Services.ProductAPI.Controllers
 		private readonly ResponseDto response = new ();
 
 		[HttpPost]
-		[ValidateCreateProductFilter]
+		//[ValidateCreateProductFilter]
 		[Authorize(Roles = "ADMIN")]
-		public async Task<IActionResult> CreateProductAsync([FromBody] CreateProductDto createProductDto)
+		public async Task<IActionResult> CreateProductAsync(CreateProductDto createProductDto)
 		{
 			try
 			{
-				var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
-				var product = await _productRepo.CreateProductAsync(createProductDto, baseUrl);
+				//var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+				var product = await _productRepo.CreateProductAsync(createProductDto, "");
 
 				response.IsSuccess = product != null;
 				response.Message = product == null ? "Product not created" : "Product successfully created";
