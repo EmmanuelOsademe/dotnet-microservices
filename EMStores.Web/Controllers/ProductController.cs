@@ -38,19 +38,18 @@ namespace EMStores.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ProductCreate(CreateProductDto createProductDto)
 		{
-			if (ModelState.IsValid)
+			
+			ResponseDto? response = await _productService.CreateProductAsync(createProductDto);
+			if(response != null && response.IsSuccess)
 			{
-				ResponseDto? response = await _productService.CreateProductAsync(createProductDto);
-				if(response != null && response.IsSuccess)
-				{
-					TempData["success"] = "Product created successfully";
-					return RedirectToAction(nameof(ProductIndex));
-				}
-				else
-				{
-					TempData["error"] = response?.Message ?? "Error creating product";
-				}
+				TempData["success"] = "Product created successfully";
+				return RedirectToAction(nameof(ProductIndex));
 			}
+			else
+			{
+				TempData["error"] = response?.Message ?? "Error creating product";
+			}
+			
 			return View(createProductDto);
 		}
 
