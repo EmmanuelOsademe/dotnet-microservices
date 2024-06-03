@@ -38,19 +38,22 @@ namespace EMStores.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> ProductCreate(CreateProductDto createProductDto)
 		{
-			
-			ResponseDto? response = await _productService.CreateProductAsync(createProductDto);
-			if(response != null && response.IsSuccess)
+			if (ModelState.IsValid)
 			{
-				TempData["success"] = "Product created successfully";
-				return RedirectToAction(nameof(ProductIndex));
-			}
-			else
-			{
-				TempData["error"] = response?.Message ?? "Error creating product";
-			}
-			
-			return View(createProductDto);
+                ResponseDto? response = await _productService.CreateProductAsync(createProductDto);
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["success"] = "Product created successfully";
+                    return RedirectToAction(nameof(ProductIndex));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message ?? "Error creating product";
+                }
+
+            }
+
+            return View(createProductDto);
 		}
 
 		[HttpGet]
@@ -105,29 +108,33 @@ namespace EMStores.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductDto productDto)
         {
-			UpdateProductDto updateProductDto = new()
+			if (ModelState.IsValid)
 			{
-				Name = productDto.Name,
-				Category = productDto.Category,
-				Price = productDto.Price,
-				Description = productDto.Description,
-				ImageUrl = productDto.ImageUrl,
-				Image = productDto.Image,
-				ImageLocalPath = productDto.ImageLocalPath
-			};
+                UpdateProductDto updateProductDto = new()
+                {
+                    Name = productDto.Name,
+                    Category = productDto.Category,
+                    Price = productDto.Price,
+                    Description = productDto.Description,
+                    ImageUrl = productDto.ImageUrl,
+                    Image = productDto.Image,
+                    ImageLocalPath = productDto.ImageLocalPath
+                };
 
 
-			ResponseDto? response = await _productService.UpdateProductAsync(productDto.ProductId, updateProductDto);
-			if(response != null && response.IsSuccess)
-			{
-				TempData["success"] = "Product Updated Successfully";
-				return RedirectToAction(nameof(ProductIndex));
-			}
-			else
-			{
-				TempData["error"] = response?.Message ?? "Error Updating Product";
-			}
-			return View(productDto);
+                ResponseDto? response = await _productService.UpdateProductAsync(productDto.ProductId, updateProductDto);
+                if (response != null && response.IsSuccess)
+                {
+                    TempData["success"] = "Product Updated Successfully";
+                    return RedirectToAction(nameof(ProductIndex));
+                }
+                else
+                {
+                    TempData["error"] = response?.Message ?? "Error Updating Product";
+                }
+
+            }
+            return View(productDto);
         }
     }
 }

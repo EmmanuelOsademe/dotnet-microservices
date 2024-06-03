@@ -1,4 +1,5 @@
 ﻿
+using EMStores.Web.Utility;
 using System.ComponentModel.DataAnnotations;
 
 namespace EMStores.Web.Models
@@ -17,7 +18,10 @@ namespace EMStores.Web.Models
 
 		public string ImageUrl { get; set; } = string.Empty;
 		public string? ImageLocalPath { get; set; } = string.Empty;
-		public IFormFile? Image { get; set; }
+
+        [AllowedExtensions(new string[] { ".jpg", ".png" })]
+        [MaxFileSize(1)]
+        public IFormFile? Image { get; set; }
 
 		[Range(1, 100)]
 		public int Count { get; set; } = 1;
