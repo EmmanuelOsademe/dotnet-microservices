@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EMStores.Web.Utility;
+using System.ComponentModel.DataAnnotations;
 
 namespace EMStores.Web.Models
 {
@@ -19,6 +20,8 @@ namespace EMStores.Web.Models
 
 		public string ImageUrl { get; set; } = string.Empty;
 
+		[AllowedExtensions(new string[]{".jpg", ".png"})]
+		[MaxFileSize(1)]
         public IFormFile? Image { get; set; }
     }
 }
