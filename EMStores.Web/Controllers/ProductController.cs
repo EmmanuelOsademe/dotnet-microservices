@@ -111,7 +111,9 @@ namespace EMStores.Web.Controllers
 				Category = productDto.Category,
 				Price = productDto.Price,
 				Description = productDto.Description,
-				ImageUrl = productDto.ImageUrl
+				ImageUrl = productDto.ImageUrl,
+				Image = productDto.Image,
+				ImageLocalPath = productDto.ImageLocalPath
 			};
 
 

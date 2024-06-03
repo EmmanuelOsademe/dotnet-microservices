@@ -5,15 +5,19 @@ using EmStores.Services.ProductAPI.Mappers;
 using EmStores.Services.ProductAPI.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using EmStores.Services.ProductAPI.Data;
+using Microsoft.EntityFrameworkCore;
+using EmStores.Services.ProductAPI.Models;
 
 namespace EmStores.Services.ProductAPI.Controllers
 {
 	[Route("api/product")]
 	[ApiController]
-	public class ProductAPIController(IProductRepository productRepository) : ControllerBase
+	public class ProductAPIController(IProductRepository productRepository, ApplicationDbContext dbContext) : ControllerBase
 	{
 		private readonly IProductRepository _productRepo = productRepository;
-		private readonly ResponseDto response = new ();
+        private readonly ApplicationDbContext _dbContext = dbContext;
+        private readonly ResponseDto response = new ();
 
 		[HttpPost]
 		//[ValidateCreateProductFilter]
@@ -22,8 +26,9 @@ namespace EmStores.Services.ProductAPI.Controllers
 		{
 			try
 			{
-				//var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
-				var product = await _productRepo.CreateProductAsync(createProductDto, "");
+
+                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+				var product = await _productRepo.CreateProductAsync(createProductDto, baseUrl);
 
 				response.IsSuccess = product != null;
 				response.Message = product == null ? "Product not created" : "Product successfully created";
@@ -45,11 +50,12 @@ namespace EmStores.Services.ProductAPI.Controllers
 		[ValidateProductIdFilter]
 		[ValidateupdateProductFilter]
 		[Authorize(Roles = "ADMIN")]
-		public async Task<IActionResult> UpdateProductAsync([FromRoute] int id, [FromBody] UpdateProductDto updateProductDto)
+		public async Task<IActionResult> UpdateProductAsync([FromRoute] int id, UpdateProductDto updateProductDto)
 		{
 			try
 			{
-				var product = await _productRepo.UpdateProductAsync(id, updateProductDto);
+                var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+                var product = await _productRepo.UpdateProductAsync(id, updateProductDto, baseUrl);
 
 				response.IsSuccess = product != null;
 				response.Message = product == null ? "Product not updated" : "Product successfully updated";

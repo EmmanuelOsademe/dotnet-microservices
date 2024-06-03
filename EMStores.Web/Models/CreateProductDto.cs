@@ -17,7 +17,7 @@ namespace EMStores.Web.Models
 		[Required]
 		public string Category { get; set; } = string.Empty;
 
-		public string ImageUrl { get; set; }
+		public string ImageUrl { get; set; } = string.Empty;
 
         public IFormFile? Image { get; set; }
     }

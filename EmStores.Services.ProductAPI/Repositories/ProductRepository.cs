@@ -32,7 +32,7 @@ namespace EmStores.Services.ProductAPI.Repositories
 					productDto.Image.CopyTo(filestream);
 				}
 
-				product.ImageUrl = $"{baseUrl}/ProductImages/{filePath}";
+				product.ImageUrl = $"{baseUrl}/ProductImages/{fileName}";
 				product.ImageLocalPath = filePath;
 			}
 			else
@@ -49,6 +49,15 @@ namespace EmStores.Services.ProductAPI.Repositories
 		public async Task<Product?> DeleteProductAsync(int id)
 		{
 			var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == id);
+			if (!string.IsNullOrEmpty(product.ImageLocalPath))
+			{
+				var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath);
+				FileInfo file = new FileInfo(oldFilePathDirectory);
+				if (file.Exists)
+				{
+					file.Delete();
+				}
+			}
 			if (product != null)
 			{
 				_dbContext.Products.Remove(product);
@@ -98,7 +107,7 @@ namespace EmStores.Services.ProductAPI.Repositories
 			return await products.ToListAsync();
 		}
 
-		public async Task<Product?> UpdateProductAsync(int id, UpdateProductDto updateProductDto)
+		public async Task<Product?> UpdateProductAsync(int id, UpdateProductDto updateProductDto, string baseUrl)
 		{
 			var product = await _dbContext.Products.FirstOrDefaultAsync(p => p.ProductId == id);
 			if(product == null)
@@ -116,9 +125,40 @@ namespace EmStores.Services.ProductAPI.Repositories
 			product.Price = updateProductDto.Price;
 			product.Description = updateProductDto.Description;
 			product.Category = updateProductDto.Category;
-			product.ImageUrl = updateProductDto.ImageUrl;
+			
+			if(updateProductDto != null)
+			{
+                if (!string.IsNullOrEmpty(updateProductDto.ImageLocalPath))
+                {
+                    var oldFilePathDirectory = Path.Combine(Directory.GetCurrentDirectory(), product.ImageLocalPath);
+                    FileInfo file = new FileInfo(oldFilePathDirectory);
+                    if (file.Exists)
+                    {
+                        file.Delete();
+                    }
+                }
+            }
 
-			await _dbContext.SaveChangesAsync();
+
+            if (updateProductDto.Image != null)
+            {
+                string fileName = product.ProductId + Path.GetExtension(updateProductDto.Image.FileName);
+                string filePath = @"wwwroot\ProductImages\" + fileName;
+                var filePathDir = Path.Combine(Directory.GetCurrentDirectory(), filePath);
+                using (var filestream = new FileStream(filePathDir, FileMode.Create))
+                {
+                    updateProductDto.Image.CopyTo(filestream);
+                }
+
+                product.ImageUrl = $"{baseUrl}/ProductImages/{fileName}";
+                product.ImageLocalPath = filePath;
+            }
+            else
+            {
+                product.ImageUrl = "https://placehold.co/600x400";
+            }
+
+            await _dbContext.SaveChangesAsync();
 			return product;
 		}
 	}
