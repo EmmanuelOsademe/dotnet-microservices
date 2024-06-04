@@ -20,7 +20,7 @@ namespace EMStores.Web.Models
 		public string? ImageLocalPath { get; set; } = string.Empty;
 
         [AllowedExtensions(new string[] { ".jpg", ".png" })]
-        [MaxFileSize(1)]
+        [MaxFileSize(3)]
         public IFormFile? Image { get; set; }
 
 		[Range(1, 100)]
