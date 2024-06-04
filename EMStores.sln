@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMStore.Services.OrdersAPI"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMStore.Services.RewardAPI", "EMStore.Services.RewardAPI\EMStore.Services.RewardAPI.csproj", "{9060FD7E-3A68-446D-8180-FDE371967239}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMStore.GatewaySolution", "EMStore.GatewaySolution\EMStore.GatewaySolution.csproj", "{7072B260-349A-40D1-BC1C-990295484390}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{9060FD7E-3A68-446D-8180-FDE371967239}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9060FD7E-3A68-446D-8180-FDE371967239}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9060FD7E-3A68-446D-8180-FDE371967239}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7072B260-349A-40D1-BC1C-990295484390}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7072B260-349A-40D1-BC1C-990295484390}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7072B260-349A-40D1-BC1C-990295484390}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7072B260-349A-40D1-BC1C-990295484390}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{6034D0CC-18DB-42B8-B9FF-88327790A221} = {5A20C41E-B00E-493A-88B1-41105413CC8C}
 		{D13C86FF-3168-4628-B973-6ABB0D1FCC10} = {5A20C41E-B00E-493A-88B1-41105413CC8C}
 		{9060FD7E-3A68-446D-8180-FDE371967239} = {5A20C41E-B00E-493A-88B1-41105413CC8C}
+		{7072B260-349A-40D1-BC1C-990295484390} = {7524014F-E612-4233-A97C-E2AB9C66D6CE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {942246F8-4445-491D-8E2E-E999CC44456D}

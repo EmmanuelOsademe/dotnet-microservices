@@ -21,7 +21,7 @@ namespace EMStores.Web.Models
 		public string ImageUrl { get; set; } = string.Empty;
 
 		[AllowedExtensions(new string[]{".jpg", ".png"})]
-		[MaxFileSize(1)]
+		[MaxFileSize(3)]
         public IFormFile? Image { get; set; }
     }
 }
