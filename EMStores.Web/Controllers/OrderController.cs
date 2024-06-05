@@ -2,6 +2,7 @@
 using EMStores.Web.Models.Dtos;
 using EMStores.Web.Services.IServices;
 using EMStores.Web.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,6 +12,8 @@ namespace EMStores.Web.Controllers
     public class OrderController(IOrderService orderService) : Controller
     {
         private readonly IOrderService _orderService = orderService;
+
+        [Authorize]
         public IActionResult OrderIndex()
         {
             return View();
