@@ -215,7 +215,7 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/api/order/GetOrders/{userId}",
+      "DownstreamPathTemplate": "/api/order/GetOrders?userId={userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -224,7 +224,10 @@
         }
       ],
       "UpstreamPathTemplate": "/api/order/GetOrders/{userId}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      }
     },
     {
       "DownstreamPathTemplate": "/api/order/UpdateOrderStatus/{orderId}",
