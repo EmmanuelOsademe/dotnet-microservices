@@ -84,11 +84,11 @@ namespace EMStores.Web.Controllers
         public async Task<IActionResult> GetAll(string status)
         {
             List<OrderHeaderDto> ordersHeaders = [];
-            string userId = "";
-            if (!User.IsInRole(StaticDetails.RoleAdmin))
-            {
-                userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
-            }
+            string userId = userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value; ;
+            //if (!User.IsInRole(StaticDetails.RoleAdmin))
+            //{
+            //    userId = User.Claims.Where(u => u.Type == JwtRegisteredClaimNames.Sub)?.FirstOrDefault()?.Value;
+            //}
 
             ResponseDto response = await _orderService.GetAllOrders(userId);
             if(response != null && response.IsSuccess)

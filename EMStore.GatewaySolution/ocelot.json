@@ -215,7 +215,7 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/api/order/GetOrders?userId={userId}",
+      "DownstreamPathTemplate": "/api/order/GetOrders/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
