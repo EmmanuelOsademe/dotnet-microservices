@@ -170,8 +170,8 @@ namespace EMStore.Services.OrdersAPI.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetOrders")]
-        public async Task<IActionResult> GetOrders(string? userId = "")
+        [HttpGet("GetOrders/{userId}")]
+        public async Task<IActionResult> GetOrders([FromRoute] string userId)
         {
             try
             {
